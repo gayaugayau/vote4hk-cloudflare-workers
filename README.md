@@ -1,9 +1,16 @@
-# Cloudflare Worker for vote4.hk
+# Cloudflare Workers for vote4.hk
 
-## Test worker in preview
+## Test workers in preview
 
 ```
 wrangler preview --watch
+```
+
+## Setup wrangler config
+
+```
+cp wrangler.toml.example wrangler.toml
+# Then provide the correct account_id and zone_id
 ```
 
 ## Publish
