@@ -21,8 +21,6 @@ wrangler publish
 wrangler publish --env production
 ```
 
-## Worker script taken from
+## Reference
 
-```
-https://developers.cloudflare.com/workers/templates/snippets/bulk_origin_proxies/
-```
+- https://developers.cloudflare.com/workers/templates/snippets/bulk_origin_proxies/
