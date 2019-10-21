@@ -12,14 +12,16 @@ const domainMap = {
  * Fetch and log a request
  * @param {Request} request
  */
-async function handleRequest (request) {
+async function handleRequest(request) {
   const userAgent = request.headers.get('User-Agent') || ''
 
   // Check if incoming hostname is a key in the domainMap object
   let url = new URL(request.url)
   const target = domainMap[url.hostname]
+  // for any type of files just pass through it (including html but we dont care)
+  const isFile = request.url && request.url.split('/').pop().indexOf('.') > -1;
   // If it is, proxy request to that meta domain
-  if (target) {
+  if (target && !isFile) {
     if (crawlers.some(crawler => RegExp(crawler.pattern).test(userAgent))) {
       url.hostname = target
       return fetch(url, request)
