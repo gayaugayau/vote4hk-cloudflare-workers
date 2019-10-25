@@ -1,9 +1,9 @@
 # Cloudflare Workers for vote4.hk
 
-## Test workers in preview
+## Install Wrangler
 
 ```
-wrangler preview --watch
+npm install -g @cloudflare/wrangler
 ```
 
 ## Setup wrangler config
@@ -11,6 +11,14 @@ wrangler preview --watch
 ```
 cp wrangler.toml.example wrangler.toml
 # Then provide the correct account_id and zone_id
+```
+
+## Test workers in preview
+
+```
+wrangler preview --watch
+
+wrangler preview --watch --env production
 ```
 
 ## Publish
@@ -32,3 +40,4 @@ curl --request GET \
 ## Reference
 
 - https://developers.cloudflare.com/workers/templates/snippets/bulk_origin_proxies/
+- "Cache API" example in https://developers.cloudflare.com/workers/templates/
