@@ -27,6 +27,10 @@ async function sha256(message) {
   return hashHex
 }
 
+/**
+ * Cache POST request
+ * @param {Event} event
+ */
 async function handlePostRequest(event) {
   let request = event.request
   let body = await request.clone().text()
@@ -40,7 +44,7 @@ async function handlePostRequest(event) {
     method: 'GET',
   })
   let cache = caches.default
-  //try to find the cache key in the cache
+  // try to find the cache key in the cache
   let response = await cache.match(cacheKey)
   // otherwise, fetch response to POST request from origin
   if (!response) {
@@ -51,13 +55,12 @@ async function handlePostRequest(event) {
     response = new Response(response.body, response)
     response.headers.append('X-V4HK-Cache-Time', `${new Date().getTime()}`)
     event.waitUntil(cache.put(cacheKey, response.clone()))
-    // event.waitUntil(cache.put(cacheKey, response))
   }
   return response
 }
 
 /**
- * Fetch and log a request
+ * Handle a request
  * @param {Event} event
  */
 async function handleRequest (event) {
@@ -67,7 +70,6 @@ async function handleRequest (event) {
     // Cache GraphQL POST request
     if (url.pathname.startsWith('/graphql')) {
       return await handlePostRequest(event)
-      // return fetch(event.request)
     }
 
     // Check if incoming hostname is a key in the domainMap object
@@ -75,6 +77,9 @@ async function handleRequest (event) {
     const target = domainMap[url.hostname]
     // If it is, proxy request to that meta domain
     if (target && crawlers.some(crawler => RegExp(crawler.pattern).test(userAgent))) {
+      url.hostname = target
+      return fetch(url, event.request)
+    } else if (target && url.pathname.startsWith('/sitemap.xml')) {
       url.hostname = target
       return fetch(url, event.request)
     }
