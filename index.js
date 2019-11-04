@@ -14,7 +14,7 @@ const domainMap = {
   'vote4.hk': 'meta.vote4.hk',
 }
 
-async function sha256(message) {
+async function sha256 (message) {
   // encode as UTF-8
   const msgBuffer = new TextEncoder().encode(message)
   // hash the message
@@ -31,7 +31,7 @@ async function sha256(message) {
  * Cache POST request
  * @param {Event} event
  */
-async function handlePostRequest(event) {
+async function handlePostRequest (event) {
   let request = event.request
   let body = await request.clone().text()
   let hash = await sha256(body)
@@ -75,13 +75,16 @@ async function handleRequest (event) {
     // Check if incoming hostname is a key in the domainMap object
     const userAgent = event.request.headers.get('User-Agent') || ''
     const target = domainMap[url.hostname]
+
     // If it is, proxy request to that meta domain
-    if (target && crawlers.some(crawler => RegExp(crawler.pattern).test(userAgent))) {
-      url.hostname = target
-      return fetch(url, event.request)
-    } else if (target && url.pathname.startsWith('/sitemap.xml')) {
-      url.hostname = target
-      return fetch(url, event.request)
+    if (target) {
+      if (
+        crawlers.some(crawler => RegExp(crawler.pattern).test(userAgent)) ||
+        url.pathname.startsWith('/sitemap.xml')
+      ) {
+        url.hostname = target
+        return fetch(url, event.request)
+      }
     }
 
     // Otherwise, process request as normal

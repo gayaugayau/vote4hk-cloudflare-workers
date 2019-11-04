@@ -1,11 +1,11 @@
 account_id = "$accountId"
 name = "dev-vote4hk-cloudflare-workers"
 type = "webpack"
-route = "dev.vote4.hk/*"
+route = "dev.vote4.hk/graphql"
 workers_dev = false
 zone_id = "$zoneId"
 
 [env.production]
 name = "vote4hk-cloudflare-workers"
 zone_id = "$zoneId"
-route = "vote4.hk/*"
+route = "vote4.hk/graphql"
