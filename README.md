@@ -37,6 +37,9 @@ curl --request GET \
   --header 'User-Agent: Googlebot/'
 ```
 
+## Refresh GraphQL Cache
+-  Set GraphQL endpoint to `https://vote4.hk/graphql?refresh=true` to invalidate and update cache for queries that have been executed
+
 ## Reference
 
 - https://developers.cloudflare.com/workers/templates/snippets/bulk_origin_proxies/

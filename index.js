@@ -30,8 +30,9 @@ async function sha256 (message) {
 /**
  * Cache POST request
  * @param {Event} event
+ * @param {boolean} shouldRefresh
  */
-async function handlePostRequest (event) {
+async function handlePostRequest (event, shouldRefresh) {
   let request = event.request
   let body = await request.clone().text()
   let hash = await sha256(body)
@@ -47,13 +48,16 @@ async function handlePostRequest (event) {
   // try to find the cache key in the cache
   let response = await cache.match(cacheKey)
   // otherwise, fetch response to POST request from origin
-  if (!response) {
+  if (!response || shouldRefresh) {
     let originUrl = new URL(request.url)
     // Use origin host gql.opencultures.life
     originUrl.hostname = originalGraphQlHostname
     response = await fetch(originUrl, request)
     response = new Response(response.body, response)
     response.headers.append('X-V4HK-Cache-Time', `${new Date().getTime()}`)
+    if (shouldRefresh) {
+      response.headers.append('X-V4HK-Cache-Refresh-Time', `${new Date().getTime()}`)
+    }
     event.waitUntil(cache.put(cacheKey, response.clone()))
   }
   return response
@@ -69,7 +73,11 @@ async function handleRequest (event) {
 
     // Cache GraphQL POST request
     if (url.pathname.startsWith('/graphql')) {
-      return await handlePostRequest(event)
+      let refresh = url.searchParams.get('refresh')
+      if (refresh) {
+        return await handlePostRequest(event, true)
+      }
+      return await handlePostRequest(event, false)
     }
 
     // Check if incoming hostname is a key in the domainMap object
