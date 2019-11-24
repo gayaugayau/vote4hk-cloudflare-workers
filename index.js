@@ -4,7 +4,7 @@ const crawlers = require('crawler-user-agents')
  * Original host of GraphQL server
  * @param {String} url
  */
-const originalGraphQlHostname = 'gql.opencultures.life'
+const originalGraphQlHostname = 'gql.vote4.hk'
 
 /**
  * An object with different url's to fetch
